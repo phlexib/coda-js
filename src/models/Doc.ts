@@ -15,7 +15,7 @@ class Doc {
 
   async listSections(params: any): Promise<Section[]> {
     // params: limit, pageToken
-    // https://coda.io/developers/apis/v1beta1#operation/listSections
+    // https://coda.io/developers/apis/v1#operation/listSections
     const { data } = await this.API.request(
       `/docs/${this.id}/sections`,
       params
@@ -26,7 +26,7 @@ class Doc {
   }
 
   async getSection(sectionIdOrName: string): Promise<Section> {
-    // https://coda.io/developers/apis/v1beta1#operation/getSection
+    // https://coda.io/developers/apis/v1#operation/getSection
     const { data } = await this.API.request(
       `/docs/${this.id}/sections/${sectionIdOrName}`
     );
@@ -34,7 +34,7 @@ class Doc {
   }
 
   async listTables(): Promise<Table[]> {
-    // https://coda.io/developers/apis/v1beta1#operation/listTables
+    // https://coda.io/developers/apis/v1#operation/listTables
     const { data } = await this.API.request(`/docs/${this.id}/tables`);
     return data.items.map(
       (table) => new Table(this.API, { ...table, docId: this.id })
@@ -42,7 +42,7 @@ class Doc {
   }
 
   async getTable(tableIdOrName: string): Promise<Table> {
-    // https://coda.io/developers/apis/v1beta1#operation/getTable
+    // https://coda.io/developers/apis/v1#operation/getTable
     const { data } = await this.API.request(
       `/docs/${this.id}/tables/${tableIdOrName}`
     );
@@ -50,7 +50,7 @@ class Doc {
   }
 
   async listControls(params: any): Promise<Control[]> {
-    // https://coda.io/developers/apis/v1beta1#operation/listControls
+    // https://coda.io/developers/apis/v1#operation/listControls
     const { data } = await this.API.request(
       `/docs/${this.id}/controls`,
       params
@@ -61,11 +61,26 @@ class Doc {
   }
 
   async getControl(controlIdOrName: string): Promise<Control> {
-    // https://coda.io/developers/apis/v1beta1#operation/getControl
+    // https://coda.io/developers/apis/v1#operation/getControl
     const { data } = await this.API.request(
       `/docs/${this.id}/controls/${controlIdOrName}`
     );
     return new Control({ ...data, docId: this.id });
+  }
+
+  async pushButton(
+    tableIdOrName: string,
+    rowIdOrName: string,
+    columnIdOrName
+  ): Promise<boolean> {
+    // https://coda.io/developers/apis/v1#operation/pushButton
+
+    const { status } = await this.API.request(
+      `/docs/${this.id}/tables/${tableIdOrName}/rows/${rowIdOrName}/buttons/${columnIdOrName}`,
+      {},
+      'POST'
+    );
+    return status === 202;
   }
 }
 

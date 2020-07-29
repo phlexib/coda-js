@@ -191,6 +191,22 @@ export class Coda {
     return status === 202;
   }
 
+  async pushButton(
+    docId: string,
+    tableIdOrName: string,
+    rowIdOrName: string,
+    columnIdOrName
+  ): Promise<boolean> {
+    // https://coda.io/developers/apis/v1#operation/pushButton
+
+    const { status } = await this.API.request(
+      `/docs/${docId}/tables/${tableIdOrName}/rows/${rowIdOrName}/buttons/${columnIdOrName}`,
+      {},
+      'POST'
+    );
+    return status === 202;
+  }
+
   async listControls(docId: string, params: any): Promise<Page[]> {
     // params: limit, pageToken, sortBy
     // https://coda.io/developers/apis/v1#operation/listControls

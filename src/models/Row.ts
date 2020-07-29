@@ -18,7 +18,7 @@ class Row {
   listValues(): any[] {
     const values: any[] = [];
 
-    Object.keys(this.values).forEach(column => {
+    Object.keys(this.values).forEach((column) => {
       values.push({ column, value: this.values[column] });
     });
 
@@ -27,19 +27,38 @@ class Row {
 
   async update(row: any): Promise<boolean> {
     // params: row (array - required)
-    // https://coda.io/developers/apis/v1beta1#operation/updateRow
+    // https://coda.io/developers/apis/v1#operation/updateRow
 
     const [formattedRow] = formatRows([row]);
     const params = { row: formattedRow };
 
-    const { status } = await this.API.request(`/docs/${this.docId}/tables/${this.tableId}/rows/${this.id}`, params, 'PUT');
+    const { status } = await this.API.request(
+      `/docs/${this.docId}/tables/${this.tableId}/rows/${this.id}`,
+      params,
+      'PUT'
+    );
     return status === 202;
   }
 
   async delete(): Promise<boolean> {
-    // https://coda.io/developers/apis/v1beta1#operation/deleteRow
+    // https://coda.io/developers/apis/v1#operation/deleteRow
 
-    const { status } = await this.API.request(`/docs/${this.docId}/tables/${this.tableId}/rows/${this.id}`, {}, 'DELETE');
+    const { status } = await this.API.request(
+      `/docs/${this.docId}/tables/${this.tableId}/rows/${this.id}`,
+      {},
+      'DELETE'
+    );
+    return status === 202;
+  }
+
+  async pushButton(columnIdOrName: string): Promise<boolean> {
+    // https://coda.io/developers/apis/v1#operation/pushButton
+
+    const { status } = await this.API.request(
+      `/docs/${this.docId}/tables/${this.tableId}/rows/${this.id}/buttons/${columnIdOrName}`,
+      {},
+      'POST'
+    );
     return status === 202;
   }
 }

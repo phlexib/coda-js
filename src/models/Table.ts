@@ -16,7 +16,7 @@ class Table {
 
   async listColumns(params: any): Promise<Column[]> {
     // params: limit, pageToken
-    // https://coda.io/developers/apis/v1beta1#operation/listColumns
+    // https://coda.io/developers/apis/v1#operation/listColumns
     const { data } = await this.API.request(
       `/docs/${this.docId}/tables/${this.id}/columns`,
       params
@@ -27,7 +27,7 @@ class Table {
   }
 
   async getColumn(columnIdOrName: string): Promise<Column> {
-    // https://coda.io/developers/apis/v1beta1#operation/getColumn
+    // https://coda.io/developers/apis/v1#operation/getColumn
     const { data } = await this.API.request(
       `/docs/${this.docId}/tables/${this.id}/columns/${columnIdOrName}`
     );
@@ -36,7 +36,7 @@ class Table {
 
   async listRows(params: any): Promise<Row[]> {
     // params: query, useColumnNames, limit, pageToken
-    // https://coda.io/developers/apis/v1beta1#operation/listRows
+    // https://coda.io/developers/apis/v1#operation/listRows
     const { data } = await this.API.request(
       `/docs/${this.docId}/tables/${this.id}/rows`,
       params
@@ -51,7 +51,7 @@ class Table {
     params: any
   ): Promise<{ items: Row[]; token: string }> {
     // params: query, useColumnNames, limit, pageToken
-    // https://coda.io/developers/apis/v1beta1#operation/listRows
+    // https://coda.io/developers/apis/v1#operation/listRows
     const { data } = await this.API.request(
       `/docs/${this.docId}/tables/${this.id}/rows`,
       params
@@ -65,7 +65,7 @@ class Table {
 
   async getRow(rowIdOrName: string, params: any): Promise<Row> {
     // params: useColumnNames
-    // https://coda.io/developers/apis/v1beta1#operation/getColumn
+    // https://coda.io/developers/apis/v1#operation/getColumn
     const { data } = await this.API.request(
       `/docs/${this.docId}/tables/${this.id}/rows/${rowIdOrName}`,
       params
@@ -76,7 +76,7 @@ class Table {
   // upserts rows
   async insertRows(rows: any[] = [], keyColumns: any[] = []): Promise<boolean> {
     // params: rows (array - required), keyColumns (array)
-    // https://coda.io/developers/apis/v1beta1#operation/upsertRows
+    // https://coda.io/developers/apis/v1#operation/upsertRows
 
     const formattedRows = formatRows(rows);
     const params = { rows: formattedRows, keyColumns };
@@ -91,7 +91,7 @@ class Table {
 
   async updateRow(rowIdOrName: string, row: any): Promise<boolean> {
     // params: row (array - required)
-    // https://coda.io/developers/apis/v1beta1#operation/updateRow
+    // https://coda.io/developers/apis/v1#operation/updateRow
 
     const [formattedRow] = formatRows([row]);
     const params = { row: formattedRow };
@@ -105,7 +105,7 @@ class Table {
   }
 
   async deleteRow(rowIdOrName: string): Promise<boolean> {
-    // https://coda.io/developers/apis/v1beta1#operation/deleteRow
+    // https://coda.io/developers/apis/v1#operation/deleteRow
 
     const { status } = await this.API.request(
       `/docs/${this.docId}/tables/${this.id}/rows/${rowIdOrName}`,
@@ -116,12 +116,23 @@ class Table {
   }
 
   async deleteRows(rowIds: string[]): Promise<boolean> {
-    // https://coda.io/developers/apis/v1beta1#operation/deleteRows
+    // https://coda.io/developers/apis/v1#operation/deleteRows
 
     const params = { rowIds };
     const { status } = await this.API.deleteWithBody(
       `/docs/${this.docId}/tables/${this.id}/rows`,
       params
+    );
+    return status === 202;
+  }
+
+  async pushButton(rowIdOrName: string, columnIdOrName): Promise<boolean> {
+    // https://coda.io/developers/apis/v1#operation/pushButton
+
+    const { status } = await this.API.request(
+      `/docs/${this.docId}/tables/${this.id}/rows/${rowIdOrName}/buttons/${columnIdOrName}`,
+      {},
+      'POST'
     );
     return status === 202;
   }
